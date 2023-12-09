@@ -1,27 +1,51 @@
 #!/bin/bash
 
-DB_BASEIMAGE=postgres
-DB_BASEIMAGE_TAG=13.1-alpine
-DB_CONTAINER_NAME=dbacc
-DB_NAME=appdb
-DB_IP=172.16.1.2
-DB_HOST_PORT=8083
-DB_DRIVER=postgresql
-DB_CONTAINER_PORT=5432
-DB_SPRING_DATASOURCE_URL=jdbc:$DB_DRIVER://$DB_CONTAINER_NAME:$DB_CONTAINER_PORT/$DB_NAME
-DB_SPRING_DATASOURCE_USERNAME=postgres
-DB_SPRING_DATASOURCE_PASSWORD=123
+if [ $1 = "dev1" ]; then
+	echo "SETTING UP DBDEV1"
+    export DB_CONTAINER_NAME=dbdev1
+    export DB_IP=172.17.0.1
+    export DB_HOST_PORT=8082
+elif [ $1 = "dev2" ]; then
+	echo "SETTING UP DBDEV2"
+    export DB_CONTAINER_NAME=dbdev2
+    export DB_IP=172.17.0.2
+    export DB_HOST_PORT=8083
+elif [ $1 = "tst1" ]; then
+	echo "SETTING UP DBTST1"
+    export DB_CONTAINER_NAME=dbtst1
+    export DB_IP=172.17.0.3
+    export DB_HOST_PORT=8084
+elif [ $1 = "tst2" ]; then
+	echo "SETTING UP DBTST2"
+    export DB_CONTAINER_NAME=dbtst2
+    export DB_IP=172.17.0.4
+    export DB_HOST_PORT=8085
+elif [ $1 = "prd1" ]; then
+	echo "SETTING UP DBPRD1"
+    export DB_CONTAINER_NAME=dbprd1
+    export DB_IP=172.17.0.5
+    export DB_HOST_PORT=8086
+else
+    echo "USAGE ./bin/dbenv [dev1|dev2|tst1|tst2|prd1] [C]"
+fi
 
-echo "export DB_IMAGE=$DB_BASEIMAGE:$DB_BASEIMAGE_TAG"
-echo "export DB_NAME=$DB_NAME"
-echo "export DB_CONTAINERNAME=$DB_CONTAINER_NAME"
-echo "export DB_IPADDRESS=$DB_IP"
-echo "export DB_PASSWORD=$DB_SPRING_DATASOURCE_PASSWORD"
-echo "export DB_HOSTPORT=$DB_HOST_PORT"
-echo "export DB_CONTAINERPORT=$DB_CONTAINER_PORT"
-echo "export SPRING_DATASOURCE_URL=$DB_SPRING_DATASOURCE_URL"
-echo "export SPRING_DATASOURCE_USERNAME=$DB_SPRING_DATASOURCE_USERNAME"
-echo "export SPRING_DATASOURCE_PASSWORD=$DB_SPRING_DATASOURCE_PASSWORD"
+export DB_BASEIMAGE=postgres
+export DB_BASEIMAGE_TAG=13.1-alpine
 
-echo '# Run this command to configure your shell: '
-echo '# eval $(./dbenv)'
+export DB_NAME=appdb
+
+export DB_DRIVER=postgresql
+export DB_CONTAINER_PORT=5432
+
+export DB_SPRING_DATASOURCE_URL=jdbc:$DB_DRIVER://$DB_CONTAINER_NAME:$DB_CONTAINER_PORT/$DB_NAME
+export DB_SPRING_DATASOURCE_USERNAME=postgres
+export DB_SPRING_DATASOURCE_PASSWORD=123
+
+eval $(./bin/.dbenv)
+
+./bin/dbinfo
+
+if [ $2 = "C" ]; then
+	echo "CREATE CONTAINER $DB_CONTAINER_NAME"
+    ./bin/dbinstall
+fi

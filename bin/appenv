@@ -1,23 +1,39 @@
 #!/bin/bash
 
-APP_IMAGE_NAME=iacc
-APP_CONTAINER_NAME=acc
-APP_IP=172.16.1.3
-APP_HOST_PORT=8084
-APP_CONTAINER_PORT=8080
-APP_GIT_REPO=https://github.com/RuWel/AngularSpringbootPostgres.git
+if [ $1 = "dev1" ]; then
+	echo "SETTING UP DEV1"
+	export APP_IMAGE_NAME=idev1
+	export APP_CONTAINER_NAME=dev1
+	export APP_IP=172.17.0.6
+	export APP_HOST_PORT=8087
+elif [ $1 = "dev2" ]; then
+	echo "SETTING UP DEV2"
+	export APP_IMAGE_NAME=idev2
+	export APP_CONTAINER_NAME=dev2
+	export APP_IP=172.17.0.7
+	export APP_HOST_PORT=8088
+elif [ $1 = "tst1" ]; then
+	echo "SETTING UP TST1"
+	export APP_IMAGE_NAME=itst1
+	export APP_CONTAINER_NAME=tst1
+	export APP_IP=172.17.0.8
+	export APP_HOST_PORT=8089
+elif [ $1 = "tst2" ]; then
+	echo "SETTING UP TST2"
+	export APP_IMAGE_NAME=itst2
+	export APP_CONTAINER_NAME=tst2
+	export APP_IP=172.17.0.9
+	export APP_HOST_PORT=8090
+else
+    echo "USAGE ./bin/dbenv [dev1|dev2|tst1|tst2] [C]"
+fi
 
-echo "export APP_IMAGENAME=$APP_IMAGE_NAME"
-echo "export DB_CONTAINERNAME=$APP_CONTAINER_NAME"
-echo "export APP_IPADDRESS=$APP_IP"
-echo "export APP_HOSTPORT=$APP_HOST_PORT"
-echo "export APP_CONTAINERPORT=$APP_CONTAINER_PORT"
-echo "export APP_GITREPO=$APP_GIT_REPO"
-echo "export SPRING_LIQUIBASE_CHANGE_LOG=classpath:db/changelog/db.changelog-master.yaml"
-echo "export SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect"
-echo "export SPRING_JPA_HIBERNATE_DDL_AUTO=none"
-echo "export MANAGEMENT_SERVER_PORT=8081"
-echo "export MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*"
+export APP_CONTAINER_PORT=8080
+export APP_GIT_REPO=https://github.com/RuWel/AngularSpringbootPostgres.git
 
-echo '# Run this command to configure your shell: '
-echo '# eval $(./appenv)'
+eval $(./bin/.appenv)
+
+if [ $2 = "C" ]; then
+	echo "CREATE CONTAINER $APP_CONTAINER_NAME"
+    ./bin/appinstall
+fi

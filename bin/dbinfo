@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo "DATABASE IMAGE     =" $DB_IMAGE
+echo "DB PORT            =" $DB_CONTAINERPORT
+echo "DATABASE CONTAINER =" $DB_CONTAINERNAME
+echo "DATABASE           =" $DB_NAME
+echo "DATABASE IP        =" $DB_IPADDRESS
+echo "HOST PORT          =" $DB_HOSTPORT
+echo "DATASOURCE         =" $SPRING_DATASOURCE_URL

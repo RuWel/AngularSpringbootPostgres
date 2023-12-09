@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "export APP_IMAGENAME=$APP_IMAGE_NAME"
+echo "export APP_CONTAINERNAME=$APP_CONTAINER_NAME"
+echo "export APP_IPADDRESS=$APP_IP"
+echo "export APP_HOSTPORT=$APP_HOST_PORT"
+echo "export APP_CONTAINERPORT=$APP_CONTAINER_PORT"
+echo "export APP_GITREPO=$APP_GIT_REPO"
+echo "export SPRING_LIQUIBASE_CHANGE_LOG=classpath:db/changelog/db.changelog-master.yaml"
+echo "export SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect"
+echo "export SPRING_JPA_HIBERNATE_DDL_AUTO=none"
+echo "export MANAGEMENT_SERVER_PORT=8081"
+echo "export MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*"

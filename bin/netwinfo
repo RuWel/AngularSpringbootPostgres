@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "NETWORK            =" $NETWORK_NAME
