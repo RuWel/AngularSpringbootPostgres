@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -36,6 +38,7 @@ public class TutorialControllerTest {
 	private TestRestTemplate testRestTemplate;
 
 	private Long id1;
+	private Long id2;
 	
 	private String url;
 	
@@ -51,10 +54,11 @@ public class TutorialControllerTest {
 
 		input = new Tutorial("Miss World", "testdescription2", false);
 		result = this.tutorialController.createTutorial(input);
+		id2 = result.getBody().getId();
 	}
 	
 	@Test
-	void contextLoads() throws Exception {
+	void contextLoadsTest() throws Exception {
 		assertThat(tutorialController).isNotNull();
 	}
 	
@@ -169,7 +173,7 @@ public class TutorialControllerTest {
 	}
 
 	@Test
-	void createTutorialTestWithException() {
+	void createTutorialWithExceptionTest() {
 		Tutorial input = new Tutorial("", "testdescription4", false);
 
 		ResponseEntity<Tutorial> result = this.tutorialController.createTutorial(input);
@@ -263,20 +267,6 @@ public class TutorialControllerTest {
 	}
 
 	@Test
-	void createTutorialRTTest() {
-		Tutorial tutorial = new Tutorial("testtitle3", "testdescription3", false);
-		
-		ResponseEntity<Tutorial> result = this.testRestTemplate.postForEntity(url, tutorial, Tutorial.class);
-
-		Assertions.assertEquals(HttpStatus.CREATED.value(), result.getStatusCode().value());
-
-		assertThat(result.getBody().getId()).isNotEqualTo(0);
-		assertThat(result.getBody().getTitle()).isEqualTo("testtitle3");
-		assertThat(result.getBody().getDescription()).isEqualTo("testdescription3");
-		assertThat(result.getBody().isPublished()).isFalse();
-	}
-
-	@Test
 	void getAllTutorialsRTTest() {
 		assertThat(this.testRestTemplate.getForObject(url, List.class)).isNotNull();
 	}
@@ -340,6 +330,199 @@ public class TutorialControllerTest {
 		assertThat(title.contains("World"));
 	}
 
+	@Test
+	void findTutorialsByKeywordNoMatchRTTest () {
+		URI uri = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("keyword", "XXX").build().toUri();
+
+		ResponseEntity<List> result = this.testRestTemplate.getForEntity(uri, List.class);		
+		Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
+		Assertions.assertEquals(0, result.getBody().size());
+	}
+
+	@Test
+	void createTutorialRTTest() {
+		Tutorial tutorial = new Tutorial("testtitle3", "testdescription3", false);
+		
+		ResponseEntity<Tutorial> result = this.testRestTemplate.postForEntity(url, tutorial, Tutorial.class);
+
+		Assertions.assertEquals(HttpStatus.CREATED.value(), result.getStatusCode().value());
+
+		assertThat(result.getBody().getId()).isNotEqualTo(0);
+		assertThat(result.getBody().getTitle()).isEqualTo("testtitle3");
+		assertThat(result.getBody().getDescription()).isEqualTo("testdescription3");
+		assertThat(result.getBody().isPublished()).isFalse();
+	}
+
+	@Test
+	void createTutorialEmptyTitleRTTest() {
+		Tutorial tutorial = new Tutorial("", "testdescription", false);
+		
+		ResponseEntity<Tutorial> result = this.testRestTemplate.postForEntity(url, tutorial, Tutorial.class);
+		
+		Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+
+		if (result.getBody() != null) {
+			if (result.getBody() instanceof CustomError ce) {
+				assertThat(ce.getErrorMessage()).isNotEmpty();
+			}
+		} else {
+			assertThat(result.getBody()).isNull();
+		}
+	}
+
+	@Test
+	void createTutorialTooLongDescriptionRTTest() {
+		Tutorial tutorial = new Tutorial("testtitle5", "testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5testdescription5", false);
+		
+		ResponseEntity<Tutorial> result = this.testRestTemplate.postForEntity(url, tutorial, Tutorial.class);
+		
+		Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+
+		if (result.getBody() != null) {
+			if (result.getBody() instanceof CustomError ce) {
+				assertThat(ce.getErrorMessage()).isNotEmpty();
+			}
+		} else {
+			assertThat(result.getBody()).isNull();
+		}
+	}
+
+	@Test
+	void createTutorialWithExceptionRTTest() {
+		Tutorial tutorial = new Tutorial("", "testdescription4", false);
+
+		ResponseEntity<Tutorial> result = this.testRestTemplate.postForEntity(url, tutorial, Tutorial.class);
+		
+		Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+	}
+
+	@Test
+	void updateTutorialRTTest() {
+		Tutorial tutorial = new Tutorial("testtitle_1", "testdescription_1", false);
+
+		ResponseEntity<Tutorial> response = testRestTemplate.exchange(
+                url + "/" + id1,
+                HttpMethod.PUT,
+                new HttpEntity<>(tutorial),
+                Tutorial.class
+        );
+
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
+
+	@Test
+	void updateTutorialEmptyTitleRTTest() {
+		Tutorial tutorial = new Tutorial("", "testdescription_1", false);
+
+		ResponseEntity<Tutorial> response = testRestTemplate.exchange(
+                url + "/" + id1,
+                HttpMethod.PUT,
+                new HttpEntity<>(tutorial),
+                Tutorial.class
+        );
+
+		assertThat(HttpStatus.BAD_REQUEST.equals(response.getStatusCode()));
+
+		if (response.getBody() != null) {
+			if (response.getBody() instanceof CustomError ce) {
+				assertThat(ce.getErrorMessage()).isNotEmpty();
+			}
+		} else {
+			assertThat(response.getBody()).isNull();
+		}
+	}
+
+	@Test
+	void updateTutorialLongDescriptionRTTest() {
+		Tutorial tutorial = new Tutorial("testtitle_1", "testdescription_1testdescription_1testdescription_1testdescription_1testdescription_1testdescription_1testdescription_1testdescription_1testdescription_1testdescription_1testdescription_1testdescription_1testdescription_1testdescription_1testdescription_1testdescription_1", false);
+
+		ResponseEntity<Tutorial> response = testRestTemplate.exchange(
+                url + "/" + id1,
+                HttpMethod.PUT,
+                new HttpEntity<>(tutorial),
+                Tutorial.class
+        );
+
+		assertThat(HttpStatus.BAD_REQUEST.equals(response.getStatusCode()));
+
+		if (response.getBody() != null) {
+			if (response.getBody() instanceof CustomError ce) {
+				assertThat(ce.getErrorMessage()).isNotEmpty();
+			}
+		} else {
+			assertThat(response.getBody()).isNull();
+		}
+	}
+
+	@Test
+	void updateTutorialNotFoundRTTest() {
+		Tutorial input = new Tutorial("testtitle_1", "testdescription_1", false);
+
+		ResponseEntity<Tutorial> response = testRestTemplate.exchange(
+	                url + "/-1",
+	                HttpMethod.PUT,
+	                new HttpEntity<>(input),
+	                Tutorial.class
+	        );
+		
+		Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+	}
+
+	@Test
+	void deleteTutorialRTTest() {
+		ResponseEntity<Tutorial> response = testRestTemplate.exchange(
+                url + "/" + id1,
+                HttpMethod.DELETE,
+                null,
+                Tutorial.class
+        );
+
+		Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+	}
+
+	@Test
+	void deleteTutorialNotFoundRTTest() {
+		ResponseEntity<Tutorial> response = testRestTemplate.exchange(
+                url + "/-1",
+                HttpMethod.DELETE,
+                null,
+                Tutorial.class
+        );
+
+		Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+	}
+
+	@Test
+	void deleteAllTutorialRTTest() {
+		ResponseEntity<Tutorial> response = testRestTemplate.exchange(
+                url,
+                HttpMethod.DELETE,
+                null,
+                Tutorial.class
+        );
+
+		Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+	}
+
+	@Test
+	void findAllPublishedTutorialNonePublishedRTTest() {
+		ResponseEntity<List> response = testRestTemplate.getForEntity(url + "/published", List.class);
+		
+		Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+	}
+
+	@Test
+	void findAllPublishedTutorialOnePublishedRTTest() {
+		Tutorial input = new Tutorial("anewone", "testdescription", true);
+
+		this.testRestTemplate.put(url + "/" + id2, input);
+		
+		ResponseEntity<List> response = testRestTemplate.getForEntity(url + "/published", List.class);
+		
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
+	
 	@AfterEach
 	void cleanupDatabaseAfterTest() {
 		tutorialController.deleteAllTutorials();
