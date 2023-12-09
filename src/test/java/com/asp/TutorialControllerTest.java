@@ -2,6 +2,8 @@ package com.asp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URI;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -11,9 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.asp.controller.TutorialController;
 import com.asp.error.CustomError;
@@ -27,11 +31,18 @@ public class TutorialControllerTest {
 		
 	@Autowired
 	private TutorialController tutorialController;
-		
+
+	@Autowired
+	private TestRestTemplate testRestTemplate;
+
 	private Long id1;
+	
+	private String url;
 	
 	@BeforeEach
 	void setupDatabaseForTest() {
+		url = "http://localhost:" + port + "/api/tutorials";
+		
 		tutorialController.deleteAllTutorials();
 	
 		Tutorial input = new Tutorial("Hello World", "testdescription1", false);
@@ -250,7 +261,85 @@ public class TutorialControllerTest {
 		ResponseEntity<List<Tutorial>> response = this.tutorialController.findAllPublishedTutorials();
 		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
-	
+
+	@Test
+	void createTutorialRTTest() {
+		Tutorial tutorial = new Tutorial("testtitle3", "testdescription3", false);
+		
+		ResponseEntity<Tutorial> result = this.testRestTemplate.postForEntity(url, tutorial, Tutorial.class);
+
+		Assertions.assertEquals(HttpStatus.CREATED.value(), result.getStatusCode().value());
+
+		assertThat(result.getBody().getId()).isNotEqualTo(0);
+		assertThat(result.getBody().getTitle()).isEqualTo("testtitle3");
+		assertThat(result.getBody().getDescription()).isEqualTo("testdescription3");
+		assertThat(result.getBody().isPublished()).isFalse();
+	}
+
+	@Test
+	void getAllTutorialsRTTest() {
+		assertThat(this.testRestTemplate.getForObject(url, List.class)).isNotNull();
+	}
+
+	@Test
+	void findTutorialByIDRTTest() {
+		ResponseEntity<Tutorial> result = this.testRestTemplate.getForEntity(url + "/" + id1, Tutorial.class);
+		
+		Assertions.assertEquals(HttpStatus.FOUND, result.getStatusCode());
+		
+		assertThat(result.getBody().getId()).isEqualTo(id1);
+		assertThat(result.getBody().getTitle()).isEqualTo("Hello World");
+		assertThat(result.getBody().getDescription()).isEqualTo("testdescription1");
+		assertThat(result.getBody().isPublished()).isFalse();
+	}
+
+	@Test
+	void findTutorialByInvalidIDRTTest() {
+		ResponseEntity<Tutorial> result = this.testRestTemplate.getForEntity(url + "/" + -1L, Tutorial.class);
+		
+		Assertions.assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		
+		if (result.getBody() != null) {
+			if (result.getBody() instanceof CustomError ce) {
+				assertThat(ce.getErrorMessage()).isNotEmpty();
+			}
+		} else {
+			assertThat(result.getBody()).isNull();
+		}
+	}
+
+	@Test
+	void findTutorialsByKeywordHelloRTTest () {
+		URI uri = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("keyword", "Hello").build().toUri();
+				
+		ResponseEntity<List> result = this.testRestTemplate.getForEntity(uri, List.class);		
+		LinkedHashMap<?, ?> map = (LinkedHashMap<?, ?>)(result.getBody().get(0));
+		
+		Assertions.assertEquals(HttpStatus.OK.value(), result.getStatusCode().value());
+		
+		String title = (String)map.get("title");
+		
+		assertThat(title.contains("Hello"));
+		Assertions.assertEquals(1, result.getBody().size());
+	}
+
+	@Test
+	void findTutorialsByKeywordWorldRTTest () {
+		URI uri = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("keyword", "World").build().toUri();
+
+		ResponseEntity<List> result = this.testRestTemplate.getForEntity(uri, List.class);		
+		LinkedHashMap<?, ?> map = (LinkedHashMap<?, ?>)(result.getBody().get(0));
+
+		Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
+		Assertions.assertEquals(2, result.getBody().size());
+
+		String title = (String)map.get("title");
+		
+		assertThat(title.contains("World"));
+	}
+
 	@AfterEach
 	void cleanupDatabaseAfterTest() {
 		tutorialController.deleteAllTutorials();
