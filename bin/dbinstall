@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ ! "$(docker ps -a -q -f name=$DB_IMAGE)" ]; then
+	echo "Removing container"
+    docker rm -f $DB_CONTAINERNAME
+    # run your container
+    echo "Creating container"
+    docker run --network $NETWORK_NAME -d --ip $DB_IPADDRESS --name $DB_CONTAINERNAME -p $DB_HOSTPORT:$DB_CONTAINERPORT -e POSTGRES_USER=$SPRING_DATASOURCE_USERNAME -e POSTGRES_PASSWORD=$SPRING_DATASOURCE_PASSWORD -e POSTGRES_DB=$DB_NAME $DB_IMAGE
+fi

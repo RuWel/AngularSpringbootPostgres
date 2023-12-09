@@ -1,0 +1,23 @@
+#!/bin/bash
+
+APP_IMAGE_NAME=iacc
+APP_CONTAINER_NAME=acc
+APP_IP=172.16.1.3
+APP_HOST_PORT=8084
+APP_CONTAINER_PORT=8080
+APP_GIT_REPO=https://github.com/RuWel/AngularSpringbootPostgres.git
+
+echo "export APP_IMAGENAME=$APP_IMAGE_NAME"
+echo "export DB_CONTAINERNAME=$APP_CONTAINER_NAME"
+echo "export APP_IPADDRESS=$APP_IP"
+echo "export APP_HOSTPORT=$APP_HOST_PORT"
+echo "export APP_CONTAINERPORT=$APP_CONTAINER_PORT"
+echo "export APP_GITREPO=$APP_GIT_REPO"
+echo "export SPRING_LIQUIBASE_CHANGE_LOG=classpath:db/changelog/db.changelog-master.yaml"
+echo "export SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect"
+echo "export SPRING_JPA_HIBERNATE_DDL_AUTO=none"
+echo "export MANAGEMENT_SERVER_PORT=8081"
+echo "export MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*"
+
+echo '# Run this command to configure your shell: '
+echo '# eval $(./appenv)'

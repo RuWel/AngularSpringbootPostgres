@@ -1,0 +1,10 @@
+#!/bin/bash
+
+NETWORK_SUBNET=172.16.1.0/16
+NETWORK_NAME=mynetwork
+
+echo "export NETWORK_SUBNET=$NETWORK_SUBNET"
+echo "export NETWORK_NAME=$NETWORK_NAME"
+
+echo '# Run this command to configure your shell: '
+echo '# eval $(./dnetwenv)'
