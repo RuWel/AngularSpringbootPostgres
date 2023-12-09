@@ -1,10 +1,8 @@
 #!/bin/bash
 
-NETWORK_SUBNET=172.16.0.0/16
-NETWORK_NAME=mynetwork
+export NETWORK_SUBNET=172.16.0.0/16
+export NETWORK_NAME=mynetwork
 
-echo "export NETWORK_SUBNET=$NETWORK_SUBNET"
-echo "export NETWORK_NAME=$NETWORK_NAME"
+eval $(./bin/.netwenv)
 
-echo '# Run this command to configure your shell: '
-echo '# eval $(./bin/netwenv)'
+./bin/netwinfo

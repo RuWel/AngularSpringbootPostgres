@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "export NETWORK_SUBNET=$NETWORK_SUBNET"
+echo "export NETWORK_NAME=$NETWORK_NAME"
