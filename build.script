@@ -1,0 +1,6 @@
+docker network create nwdev1
+
+docker run --network nwdev1 --name dbdev1 --env-file ./db.env -p 8085:5432 postgres:13.1-alpine
+
+docker build --no-cache --progress plain -t idev1 .
+docker run --network nwdev1 --name dev1 --env-file ./env/app.env -p 8082:8080 idev1
