@@ -25,18 +25,19 @@ import com.asp.repository.TutorialRepository;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("/api")
 public class TutorialController {
+
+	@Autowired
+	TutorialRepository tutorialRepository;
+
 
 	@GetMapping("/")
 	public ResponseEntity<String> sayHello() {
 		System.out.println("SAY HELLO");
 		return new ResponseEntity<>("Hello", HttpStatus.OK);
 	}
-
-/*	
-	@Autowired
-	TutorialRepository tutorialRepository;
-
+	
 	@GetMapping("/tutorials")
 	public ResponseEntity<List<Tutorial>> getAllTutorials(@RequestParam(required = false) String keyword) {
 		List<Tutorial> result = new ArrayList<>();
@@ -138,5 +139,4 @@ public class TutorialController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-*/
 }
