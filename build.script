@@ -1,6 +1,13 @@
-docker network create nwdev1
+DBDEV1
+docker network create nwdbdev1
+docker run --network nwdbdev1 --name dbdev1 --env-file ./env/db.env -v dbdev1volume:/var/lib/pgsql/data:rw -p 8082:5432 postgres:13.1-alpine
 
-docker run --network nwdev1 --name dbdev1 --env-file ./db.env -p 8085:5432 postgres:13.1-alpine
+DBDEV2
+docker network create nwdbdev2
+docker run --network nwdbdev2 --name dbdev2 --env-file ./env/db.env -v dbdev2volume:/var/lib/pgsql/data:rw -p 8083:5432 postgres:13.1-alpine
 
-docker build --no-cache --progress plain -t idev1 .
-docker run --network nwdev1 --name dev1 --env-file ./env/app.env -p 8082:8080 idev1
+DEV IMAGE
+docker build --no-cache --progress plain -t idev .
+
+DEV1
+docker run --network nwdbdev1 --name dev1 -e SPRING_DATASOURCE_URL=jdbc:postgresql://dbdev1:5432/appdb --env-file ./env/app.env -p 8087:8080 idev1
