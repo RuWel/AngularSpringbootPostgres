@@ -27,11 +27,16 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api")
 public class TutorialController {
-	
+
+	@GetMapping("/hello")
+	public ResponseEntity<String> sayHello() {
+		return new ResponseEntity<>("Hello", HttpStatus.OK);
+	}
+
+/*	
 	@Autowired
 	TutorialRepository tutorialRepository;
 
-	// get all tutorials or tutorials containing keyword in title
 	@GetMapping("/tutorials")
 	public ResponseEntity<List<Tutorial>> getAllTutorials(@RequestParam(required = false) String keyword) {
 		List<Tutorial> result = new ArrayList<>();
@@ -45,7 +50,6 @@ public class TutorialController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
-	// get tutorial by ID
 	@GetMapping("/tutorials/{id}")
 	public ResponseEntity<Tutorial> findTutorialByID (@PathVariable("id") Long id) {
 		try {
@@ -134,4 +138,5 @@ public class TutorialController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+*/
 }

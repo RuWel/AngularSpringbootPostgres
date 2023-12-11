@@ -1,10 +1,8 @@
 FROM eclipse-temurin:17-jdk-alpine
 LABEL maintainer="Rudi Welter"
 
-ARG git_repo=
-ENV git_repo=$git_repo
-
-RUN echo $git_repo
+# ARG git_repo
+# RUN echo $git_repo
 
 # INSTALL GIT
 RUN apk add git
@@ -26,4 +24,3 @@ RUN ["rm", "-rf", "target"]
 
 # EXECUTE JAR
 ENTRYPOINT ["java","-jar","app.jar"]
-
