@@ -1,6 +1,0 @@
-#!/bin/bash
-
-echo "APP IMAGE NAME     =" $APP_IMAGENAME
-echo "APP CONTAINER NAME =" $APP_CONTAINERNAME
-echo "APP IP             =" $APP_IPADDRESS
-echo "APP HOSt PORT      =" $APP_HOSTPORT

@@ -1,0 +1,42 @@
+#!/bin/bash
+
+SERVER=$1
+DATABASE=$2
+
+if [ $SERVER = "dev1" ]; then
+  SERVER_PORT=8087
+elif [ $SERVER = "dev2" ]; then
+  SERVER_PORT=8088
+elif [ $SERVER = "tst1" ]; then
+  SERVER_PORT=8089
+elif [ $SERVER = "tst2" ]; then
+  SERVER_PORT=8090
+fi
+
+echo "(1/) CONNECTING SERVER $SERVER (PORT : $SERVER_PORT) TO DATABASE $DATABASE"
+
+IMAGE="idev"
+
+if [ ! "$(docker image ls | grep $IMAGE)" ]; then
+	echo "(2/) IMAGE $IMAGE DOESN'T EXIST ... CREATING"
+	docker build --no-cache --progress plain -t $IMAGE .
+else
+	echo "(2/) IMAGE $IMAGE EXISTS"
+fi
+
+if [ "$(docker ps -a | grep -w $SERVER)" ]; then
+	echo "(3/) SERVER $SERVER EXISTS ... STOP AND DESTROY"
+	docker stop $SERVER
+	docker rm $SERVER;
+else
+	echo "(3/) SERVER $SERVER DOESN'T EXISTS"
+fi
+
+NETWORK="nw"$DATABASE
+URL="jdbc:postgresql://"$DATABASE":5432/appdb"
+
+docker run -d --network $NETWORK --name $SERVER -e SPRING_DATASOURCE_URL=$URL --env-file ./env/app.env -p $SERVER_PORT:8080 $IMAGE
+
+ping -c 5 $DATABASE
+
+echo "CONNECTED SERVER $SERVER (PORT : $SERVER_PORT) TO DATABASE $DATABASE"

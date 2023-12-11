@@ -1,8 +1,0 @@
-#!/bin/bash
-
-export NETWORK_SUBNET=172.16.0.0/16
-export NETWORK_NAME=mynetwork
-
-eval $(./bin/.netwenv)
-
-./bin/netwinfo
