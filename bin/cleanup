@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# ARG = -civn
+#	c = CONTAINERS
+#	i = IMAGES
+#	v = VOLUMES
+# 	n = NETWORKS
+
+ARG=$1
+echo checking ARGS : $ARG
+
+if [[ $ARG == *c* ]]; then
+  docker stop $(docker ps -a -q)
+  docker container prune -f
+fi
+
+if [[ $ARG == *i* ]]; then
+  docker rmi $(docker images -a -q)
+fi
+
+if [[ $ARG == *v* ]]; then
+  docker volume prune -f
+fi
+
+if [[ $ARG == *n* ]]; then
+  docker network prune -f
+fi
