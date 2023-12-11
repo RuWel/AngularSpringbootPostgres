@@ -25,10 +25,9 @@ import com.asp.repository.TutorialRepository;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
 public class TutorialController {
 
-	@GetMapping("/hello")
+	@GetMapping("/")
 	public ResponseEntity<String> sayHello() {
 		System.out.println("SAY HELLO");
 		return new ResponseEntity<>("Hello", HttpStatus.OK);
