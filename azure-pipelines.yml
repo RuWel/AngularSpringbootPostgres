@@ -39,3 +39,7 @@ steps:
     ArtifactName: $(ARTIFACT_NAME)
     publishLocation: 'Container'
 
+- task: CmdLine@2
+  inputs:
+    script: 'ls'
+    workingDirectory: '$(Build.ArtifactStagingDirectory)'
