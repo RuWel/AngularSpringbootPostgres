@@ -12,15 +12,12 @@ variables:
 
 steps: 
 - template: templates/maven_clean-package.yml
+- template: templates/copy_jar_files
+	parameters:
+		src: '$(Build.SourcesDirectory)/target'
+		files: '**/*.jar'
+		dst: '$(Build.ArtifactStagingDirectory)'
 
-- task: CopyFiles@2
-  displayName: 'Copy Files'
-  inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/target'
-    Contents: '**/*.jar'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    CleanTargetFolder: true
-    OverWrite: true
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
