@@ -39,7 +39,7 @@ steps:
     dst: '$(AWS_S3_FOLDER)'
     file: '$(APP_NAME)'
 # build docker image and send it to AWS ECR
-- template: deploy_to_ECR.yml   
+- template: templates/deploy_to_ECR.yml   
   parameters:
     deploy: 'true'
     image: '$(IMAGE_NAME)'
