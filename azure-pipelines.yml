@@ -56,5 +56,5 @@ steps:
     regionName: 'eu-central-1'
     bucketName: '$(AWS_S3_BUCKET)'
     sourceFolder: '$(Build.ArtifactStagingDirectory)'
-    globExpressions: '**/*'
+    globExpressions: '**/app.jar'
     targetFolder: '$(AWS_S3_FOLDER)'
