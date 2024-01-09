@@ -4,17 +4,16 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+
 variables:
   ARTIFACT_NAME: 'SpringBootApp'
-  BUCKET_NAME: 'aws-bucket-eu-central-1'
-  BUCKET_FOLDER: 'deliveries'
 
 steps: 
 - task: Maven@4
-  displayName: 'Clean Build and Install'
+  displayName: 'Clean and Package'
   inputs:
     mavenPomFile: 'pom.xml'
-    goals: 'clean install'
+    goals: 'clean package'
     publishJUnitResults: false
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.17'
@@ -23,18 +22,7 @@ steps:
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
   
-- task: CopyFiles@2
-  displayName: 'Copy Files'
-  inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/target'
-    Contents: '**/*.jar'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    CleanTargetFolder: true
-    OverWrite: true
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: $(ARTIFACT_NAME)
-    publishLocation: 'Container'
+  - task: CmdLine@2
+    inputs:
+      script: 'ls'
+      workingDirectory: '$(Build.SourcesDirectory)/target'
