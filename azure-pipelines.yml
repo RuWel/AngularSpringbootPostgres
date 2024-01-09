@@ -22,7 +22,7 @@ steps:
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
   
-  - task: CmdLine@2
-    inputs:
-      script: 'ls'
-      workingDirectory: '$(Build.SourcesDirectory)/target'
+- task: CmdLine@2
+  inputs:
+    script: 'ls'
+    workingDirectory: '$(Build.SourcesDirectory)/target'
