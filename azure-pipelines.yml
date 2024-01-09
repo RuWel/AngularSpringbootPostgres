@@ -25,15 +25,6 @@ steps:
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
   
-- task: CopyFiles@2
-  displayName: 'Copy Files'
-  inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/target'
-    Contents: '**/*.jar'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/app.jar'
-    CleanTargetFolder: true
-    OverWrite: true
-
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
   inputs:
@@ -48,4 +39,4 @@ steps:
     bucketName: '$(AWS_S3_BUCKET)'
     sourceFolder: '$(Build.ArtifactStagingDirectory)'
     globExpressions: '**/*.jar'
-    targetFolder: '$(AWS_S3_FOLDER)'
+    targetFolder: '$(AWS_S3_FOLDER)/app.jar'
