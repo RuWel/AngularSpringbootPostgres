@@ -10,6 +10,7 @@ variables:
   AWS_S3_BUCKET: 'aws-ruwe-bucket'
   AWS_S3_FOLDER: deliveries
   APP_NAME: 'app.jar'
+  IMAGE_NAME: 'app'
 
 steps: 
 # execute a mvn clean package
@@ -37,4 +38,8 @@ steps:
     src: '$(Build.ArtifactStagingDirectory)'
     dst: '$(AWS_S3_FOLDER)'
     file: '$(APP_NAME)'
-    
+# build docker image and send it to AWS ECR
+- template: deploy_to_ECR.yml   
+  parameters:
+    deploy: 'true'
+    image: '$(IMAGE_NAME)'
