@@ -1,0 +1,14 @@
+paramters:
+  src: ''
+  files: ''
+  dst: ''
+  
+steps:
+- task: CopyFiles@2
+  displayName: 'Copy Files'
+  inputs:
+    SourceFolder: '${{parameters.src}}'
+    Contents: '${{parameters.files}}'
+    TargetFolder: '${{parameters.dst}}'
+    CleanTargetFolder: true
+    OverWrite: true
