@@ -1,0 +1,13 @@
+parameters:
+  src: ''
+  file: 'app.jar'
+  
+steps:
+- task: Bash@3
+  displayName: 'Copy file to APP.JAR'
+  inputs:
+    targetType: 'inline'
+    script: |
+      cd {{ parameters.src }}
+      find . -name '*.jar' -exec cp -p '{}' ${{parameters.file}} ';'
+
