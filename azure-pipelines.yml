@@ -9,24 +9,32 @@ variables:
   ARTIFACT_NAME: 'SpringBootApp'
   AWS_S3_BUCKET: 'aws-ruwe-bucket'
   AWS_S3_FOLDER: deliveries
+  APP_NAME: 'app.jar'
 
 steps: 
+# execute a mvn clean package
 - template: templates/maven_clean_package.yml
+# copy *.jar files from src to dst
 - template: templates/copy_jar_files.yml
   parameters:
     src: '$(Build.SourcesDirectory)/target'
     files: '**/*.jar'
     dst: '$(Build.ArtifactStagingDirectory)'
+# publish artifact
 - template: templates/publish_artifact.yml
   parameters:
     path: '$(Build.ArtifactStagingDirectory)'
     name: $(ARTIFACT_NAME)
+# copy *.jar file (in src) to app.jar
 - template: templates/copy_to_app_jar.yml
   parameters:
     src: '$(Build.ArtifactStagingDirectory)'
+    file: '$(APP_NAME)'
+# send app.jar to ACS S3 bucket
 - template: templates/s3_upload.yml
   parameters:
     bucket: '$(AWS_S3_BUCKET)'
     src: '$(Build.ArtifactStagingDirectory)'
     dst: '$(AWS_S3_FOLDER)'
+    file: '$(APP_NAME)'
     

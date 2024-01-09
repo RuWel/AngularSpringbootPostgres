@@ -3,6 +3,7 @@ parameters:
   bucket : ''
   src: ''
   dst: ''
+  file: 'app.jar'
   
 steps:
 - task: S3Upload@1
@@ -11,7 +12,7 @@ steps:
     regionName: 'eu-central-1'
     bucketName: ${{parameters.bucket}}
     sourceFolder: ${{parameters.src}}
-    globExpressions: '**/app.jar'
+    globExpressions: '**/+ ${{parameters.file}}'
     targetFolder: ${{parameters.dst}}
     keyManagement: 'awsManaged'
     encryptionAlgorithm: 'AES256'
