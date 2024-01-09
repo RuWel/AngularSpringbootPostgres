@@ -1,8 +1,10 @@
 parameters:
+- name: 'image'
+  type: string
+  default: ''
 - name: 'deploy'  
   type: boolean
   default: false
-- image: ''
 
 steps:
 - ${{ if eq(parameters.deploy, true) }};
