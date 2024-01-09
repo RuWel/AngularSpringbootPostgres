@@ -32,11 +32,20 @@ steps:
     ArtifactName: $(ARTIFACT_NAME)
     publishLocation: 'Container'
 
+- task: Bash@3
+  displayName: 'Copy file to APP.JAR'
+  inputs:
+    targetType: 'inline'
+    script: |
+      cd $(Build.ArtifactStagingDirectory)
+      find . -name '*.jar' -exec cp -p '{}' app.jar ';'
+      ls -all
+
 - task: S3Upload@1
   inputs:
     awsCredentials: 'aws-ruwe-sc'
     regionName: 'eu-central-1'
     bucketName: '$(AWS_S3_BUCKET)'
     sourceFolder: '$(Build.ArtifactStagingDirectory)'
-    globExpressions: '**/*.jar'
-    targetFolder: '$(AWS_S3_FOLDER)/app.jar'
+    globExpressions: '**/app.jar'
+    targetFolder: '$(AWS_S3_FOLDER)'
