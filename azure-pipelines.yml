@@ -11,7 +11,7 @@ variables:
   AWS_S3_FOLDER: deliveries
 
 steps: 
-- template: templates/maven_clean-package.yml
+- template: templates/maven_clean_package.yml
 
 - task: CopyFiles@2
   displayName: 'Copy Files'
