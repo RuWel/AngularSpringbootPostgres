@@ -13,4 +13,4 @@ steps:
     inputs:
       repository: '${{parameters.image}}'
       command: 'build'
-    Dockerfile: '**/Dockerfile'
+      Dockerfile: '**/Dockerfile'
