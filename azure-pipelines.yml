@@ -11,20 +11,8 @@ variables:
   AWS_S3_FOLDER: deliveries
 
 steps: 
-- task: Maven@4
-  displayName: 'Clean and Package'
-  inputs:
-    mavenPomFile: 'pom.xml'
-    goals: 'clean package'
-    options: '-DskipTests=true'
-    publishJUnitResults: false
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.17'
-    mavenVersionOption: 'Default'
-    mavenAuthenticateFeed: false
-    effectivePomSkip: false
-    sonarQubeRunAnalysis: false
-  
+- template: templates/maven_clean-package.yml
+
 - task: CopyFiles@2
   displayName: 'Copy Files'
   inputs:
