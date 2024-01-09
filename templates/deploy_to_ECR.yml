@@ -7,7 +7,7 @@ parameters:
   default: false
 
 steps:
-- ${{ if eq(parameters.deploy, true) }};
+- ${{ if eq(parameters.deploy, true) }}:
   - task: Docker@2
     displayName: 'Build Docker Image'
     inputs:
