@@ -47,4 +47,4 @@ steps:
     regionName: 'eu-central-1'
     bucketName: '$(AWS_S3_BUCKET)'
     sourceFolder: '$(Build.StagingDirectory)'
-    globExpressions: '**/*.jar':
+    globExpressions: '**/*.jar'
