@@ -22,4 +22,5 @@ steps:
     path: '$(Build.ArtifactStagingDirectory)'
     name: $(ARTIFACT_NAME)
 - template: templates/copy_to_app_jar.yml
+  parameters:
     src: '$(Build.ArtifactStagingDirectory)'
