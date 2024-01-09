@@ -23,7 +23,19 @@ steps:
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
   
-- task: CmdLine@2
+- task: CopyFiles@2
+  displayName: 'Copy Files'
   inputs:
-    script: 'ls'
-    workingDirectory: '$(Build.SourcesDirectory)/target'
+    SourceFolder: '$(Build.SourcesDirectory)/target'
+    Contents: '**/*.jar'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    CleanTargetFolder: true
+    OverWrite: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: $(ARTIFACT_NAME)
+    publishLocation: 'Container'
+
