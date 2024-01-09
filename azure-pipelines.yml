@@ -40,11 +40,7 @@ steps:
     ArtifactName: $(ARTIFACT_NAME)
     publishLocation: 'Container'
 
-
-- task: S3Upload@1
+- task: CmdLine@2
   inputs:
-    awsCredentials: 'aws-ruwe-sc'
-    regionName: 'eu-central-1'
-    bucketName: '$(AWS_S3_BUCKET)'
-    sourceFolder: '$(Build.StagingDirectory)'
-    globExpressions: '**/*.jar'
+    script: 'ls'
+    workingDirectory: '$(Build.StagingDirectory)'
