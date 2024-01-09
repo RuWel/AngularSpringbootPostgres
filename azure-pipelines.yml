@@ -11,10 +11,10 @@ variables:
   AWS_S3_FOLDER: deliveries
 
 steps: 
-- template: templates/maven_clean-package.yml
-- template: templates/copy_jar_files
-	parameters:
-		src: '$(Build.SourcesDirectory)/target'
-		files: '**/*.jar'
-		dst: '$(Build.ArtifactStagingDirectory)'
+- template: templates/maven_clean_package.yml
+- template: templates/copy_jar_files.yml
+  parameters:
+    src: '$(Build.SourcesDirectory)/target'
+    files: '**/*.jar'
+    dst: '$(Build.ArtifactStagingDirectory)'
 
