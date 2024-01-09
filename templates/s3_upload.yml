@@ -12,7 +12,7 @@ steps:
     regionName: 'eu-central-1'
     bucketName: ${{parameters.bucket}}
     sourceFolder: ${{parameters.src}}
-    globExpressions: '**/*.${{parameters.file}}'
+    globExpressions: '**/${{parameters.file}}'
     targetFolder: ${{parameters.dst}}
     keyManagement: 'awsManaged'
     encryptionAlgorithm: 'AES256'
