@@ -7,6 +7,7 @@ pool:
 
 variables:
   ARTIFACT_NAME: 'SpringBootApp'
+  AWS_S3_BUCKET: 'aws-ruwe-bucket'
 
 steps: 
 - task: Maven@4
@@ -39,7 +40,11 @@ steps:
     ArtifactName: $(ARTIFACT_NAME)
     publishLocation: 'Container'
 
-- task: CmdLine@2
+
+- task: S3Upload@1
   inputs:
-    script: 'ls'
-    workingDirectory: '$(Build.ArtifactStagingDirectory)'
+    awsCredentials: 'aws-ruwe-sc'
+    regionName: 'eu-central-1'
+    bucketName: '$(AWS_S3_BUCKET)'
+    sourceFolder: '$(Build.StagingDirectory)'
+    globExpressions: '**/*.jar':
