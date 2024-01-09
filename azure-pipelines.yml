@@ -8,6 +8,7 @@ pool:
 variables:
   ARTIFACT_NAME: 'SpringBootApp'
   AWS_S3_BUCKET: 'aws-ruwe-bucket'
+  AWS_S3_FOLDER: deliveries
 
 steps: 
 - task: Maven@4
@@ -47,3 +48,4 @@ steps:
     bucketName: '$(AWS_S3_BUCKET)'
     sourceFolder: '$(Build.ArtifactStagingDirectory)'
     globExpressions: '**/*.jar'
+    targetFolder: '$(AWS_S3_FOLDER)'
