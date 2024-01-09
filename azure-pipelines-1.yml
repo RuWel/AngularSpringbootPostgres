@@ -1,0 +1,28 @@
+rigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+
+variables:
+  ARTIFACT_NAME: 'SpringBootApp'
+
+steps: 
+- task: Maven@4
+  displayName: 'Clean and Package'
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'clean package'
+    publishJUnitResults: false
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.17'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+  
+- task: CmdLine@2
+  inputs:
+    script: 'ls'
+    workingDirectory: '$(Build.SourcesDirectory)/target'
