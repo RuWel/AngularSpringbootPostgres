@@ -1,0 +1,19 @@
+parameters:
+  service_connection: 'aws-ruwe-sc'
+  bucket : ''
+  src: ''
+  dst: ''
+  
+steps:
+- task: S3Upload@1
+  inputs:
+    awsCredentials: ${{parameters.service_connection}}
+    regionName: 'eu-central-1'
+    bucketName: ${{parameters.bucket}}
+    sourceFolder: ${{parameters.src}}
+    globExpressions: '**/app.jar'
+    targetFolder: ${{parameters.dst}}
+    keyManagement: 'awsManaged'
+    encryptionAlgorithm: 'AES256'
+    logRequest: true
+    logResponse: true

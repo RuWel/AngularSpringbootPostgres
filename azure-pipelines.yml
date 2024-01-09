@@ -24,3 +24,9 @@ steps:
 - template: templates/copy_to_app_jar.yml
   parameters:
     src: '$(Build.ArtifactStagingDirectory)'
+- template: templates/s3_upload.yml
+  parameters:
+    bucket: '$(AWS_S3_BUCKET)'
+    src: '$(Build.ArtifactStagingDirectory)'
+    dst: '$(AWS_S3_FOLDER)'
+    
