@@ -8,6 +8,6 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      cd {{ parameters.src }}
+      cd ${{ parameters.src }}
       find . -name '*.jar' -exec cp -p '{}' ${{parameters.file}} ';'
 
