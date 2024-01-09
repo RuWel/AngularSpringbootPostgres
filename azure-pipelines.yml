@@ -17,4 +17,8 @@ steps:
     src: '$(Build.SourcesDirectory)/target'
     files: '**/*.jar'
     dst: '$(Build.ArtifactStagingDirectory)'
-
+- template: templates/publish_artifact.yml
+  parameters:
+    path: '$(Build.ArtifactStagingDirectory)'
+    name: $(ARTIFACT_NAME)
+    
