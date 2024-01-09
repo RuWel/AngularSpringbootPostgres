@@ -58,3 +58,7 @@ steps:
     sourceFolder: '$(Build.ArtifactStagingDirectory)'
     globExpressions: '**/app.jar'
     targetFolder: '$(AWS_S3_FOLDER)'
+    keyManagement: 'awsManaged'
+    encryptionAlgorithm: 'AES256'
+    logRequest: true
+    logResponse: true
