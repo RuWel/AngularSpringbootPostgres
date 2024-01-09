@@ -12,7 +12,7 @@ variables:
 
 steps: 
 - template: templates/maven_clean_package.yml
-- template: templates/copy_jar_files
+- template: templates/copy_jar_files.yml
   parameters:
     src: '$(Build.SourcesDirectory)/target'
     files: '**/*.jar'
